@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quadratic Solver & Grading System</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f8fc;
+    margin: 0;
+    padding: 20px;
+  }
+  h1, h2 {
+    text-align: center;
+    color: #333;
+  }
+  .container {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 450px;
+    box-shadow: 0 0 10px #ccc;
+  }
+  label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 6px;
+    border: 1px solid #bbb;
+  }
+  button {
+    width: 48%;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    margin-top: 15px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .solve-btn { background-color: #0905f0; color: white; }
+  .reset-btn { background-color: #f44336; color: white; }
+  .error {
+    color: red;
+    font-size: 0.9em;
+  }
+  .result {
+    margin-top: 15px;
+    background: #eefaf1;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.95em;
+  }
+  hr {
+    border: none;
+    border-top: 2px solid #eee;
+    margin: 30px 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>QUADRATIC SOLVER & GRADING SYSTSEM</h1>
+
+<!-- ================= Quadratic Solver ================= -->
+<div class="container">
+  <h2>1️⃣ Quadratic Equation Solver</h2>
+
+  <label for="a">Enter a:</label>
+  <input type="number" id="a" step="any">
+  <div id="a-error" class="error"></div>
+
+  <label for="b">Enter b:</label>
+  <input type="number" id="b" step="any">
+  <div id="b-error" class="error"></div>
+
+  <label for="c">Enter c:</label>
+  <input type="number" id="c" step="any">
+  <div id="c-error" class="error"></div>
+
+  <div>
+    <button class="solve-btn" onclick="solveQuadratic()">Solve</button>
+    <button class="reset-btn" onclick="resetQuadratic()">Reset</button>
+  </div>
+
+  <div id="quadratic-result" class="result"></div>
+</div>
+
+<hr>
+
+<!-- ================= Grading System ================= -->
+<div class="container">
+  <h2>2️⃣ Grading System</h2>
+
+  <label for="score">Enter Score (0–100):</label>
+  <input type="number" id="score" min="0" max="100">
+  <div id="score-error" class="error"></div>
+
+  <div>
+    <button class="solve-btn" onclick="calculateGrade()">Check Grade</button>
+    <button class="reset-btn" onclick="resetGrade()">Clear</button>
+  </div>
+
+  <div id="grade-result" class="result"></div>
+</div>
+
+<script>
+/* ========== Quadratic Solver ========== */
+function solveQuadratic() {
+  let a = parseFloat(document.getElementById("a").value);
+  let b = parseFloat(document.getElementById("b").value);
+  let c = parseFloat(document.getElementById("c").value);
+
+  // clear errors and result
+  document.getElementById("a-error").textContent = "";
+  document.getElementById("b-error").textContent = "";
+  document.getElementById("c-error").textContent = "";
+  document.getElementById("quadratic-result").innerHTML = "";
+
+  let valid = true;
+
+  if (isNaN(a)) { document.getElementById("a-error").textContent = "Please enter a valid number for a."; valid = false; }
+  if (isNaN(b)) { document.getElementById("b-error").textContent = "Please enter a valid number for b."; valid = false; }
+  if (isNaN(c)) { document.getElementById("c-error").textContent = "Please enter a valid number for c."; valid = false; }
+  if (a === 0) { document.getElementById("a-error").textContent = "a cannot be 0 in a quadratic equation."; valid = false; }
+
+  if (!valid) return;
+
+  let D = b * b - 4 * a * c;
+  let resultText = `<strong>Discriminant (D):</strong> ${D.toFixed(2)}<br>`;
+
+  if (D > 0) {
+    let r1 = (-b + Math.sqrt(D)) / (2 * a);
+    let r2 = (-b - Math.sqrt(D)) / (2 * a);
+    resultText += `<strong>Nature of roots:</strong> Two distinct real roots<br>`;
+    resultText += `Root 1 = ${r1.toFixed(3)}<br>Root 2 = ${r2.toFixed(3)}`;
+  } 
+  else if (D === 0) {
+    let r = -b / (2 * a);
+    resultText += `<strong>Nature of roots:</strong> One real repeated root<br>`;
+    resultText += `Root = ${r.toFixed(3)}`;
+  } 
+  else {
+    let real = (-b / (2 * a)).toFixed(3);
+    let imag = (Math.sqrt(-D) / (2 * a)).toFixed(3);
+    resultText += `<strong>Nature of roots:</strong> Two complex conjugate roots<br>`;
+    resultText += `Root 1 = ${real} + ${imag}i<br>Root 2 = ${real} - ${imag}i`;
+  }
+
+  document.getElementById("quadratic-result").innerHTML = resultText;
+}
+
+function resetQuadratic() {
+  document.getElementById("a").value = "";
+  document.getElementById("b").value = "";
+  document.getElementById("c").value = "";
+  document.getElementById("a-error").textContent = "";
+  document.getElementById("b-error").textContent = "";
+  document.getElementById("c-error").textContent = "";
+  document.getElementById("quadratic-result").innerHTML = "";
+}
+
+/* ========== Grading System ========== */
+function calculateGrade() {
+  let score = parseInt(document.getElementById("score").value);
+  let errorDiv = document.getElementById("score-error");
+  let resultDiv = document.getElementById("grade-result");
+  
+  errorDiv.textContent = "";
+  resultDiv.innerHTML = "";
+
+  if (isNaN(score)) {
+    errorDiv.textContent = "Please enter a valid number.";
+    return;
+  }
+
+  if (score < 0 || score > 100) {
+    errorDiv.textContent = "Score must be between 0 and 100.";
+    return;
+  }
+
+  let grade = "";
+  if (score >= 85 && score <= 100) grade = "A+";
+  else if (score >= 75) grade = "A";
+  else if (score >= 65) grade = "B+";
+  else if (score >= 60) grade = "B";
+  else if (score >= 55) grade = "C+";
+  else if (score >= 50) grade = "C";
+  else grade = "D";
+
+  resultDiv.innerHTML = `<strong>Score ${score} → Grade ${grade}</strong><br>Good job keeping up!`;
+}
+
+function resetGrade() {
+  document.getElementById("score").value = "";
+  document.getElementById("score-error").textContent = "";
+  document.getElementById("grade-result").innerHTML = "";
+}
+</script>
+
+</body>
+</html>
